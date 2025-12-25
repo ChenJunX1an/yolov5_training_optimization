@@ -1,0 +1,71 @@
+{
+    "experiment_name": "zero3",
+    "description": "ZeRO-3组实验 - DeepSpeed优化",
+
+    "data": {
+        "train_path": "./data/kitti_subset/train",
+        "val_path": "./data/kitti_subset/val",
+        "nc": 3,
+        "img_size": 640
+    },
+
+    "model": {
+        "model_type": "s",
+        "pretrained": true
+    },
+
+    "training": {
+        "epochs": 50,
+        "batch_size": 8,
+        "workers": 4
+    },
+
+    "hyp": {
+        "lr0": 0.01,
+        "lrf": 0.01,
+        "momentum": 0.937,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 3.0,
+        "warmup_momentum": 0.8,
+        "warmup_bias_lr": 0.1,
+        "box": 0.05,
+        "cls": 0.5,
+        "obj": 1.0
+    },
+
+    "deepspeed": {
+        "fp16": {"enabled": true},
+        "zero_optimization": {
+            "stage": 3,
+            "offload_optimizer": {"device": "cpu", "pin_memory": true},
+            "offload_param": {"device": "cpu", "pin_memory": true},
+            "overlap_comm": true,
+            "contiguous_gradients": true,
+            "reduce_bucket_size": 65536,
+            "stage3_prefetch_bucket_size": 65536,
+            "stage3_param_persistence_threshold": 10000,
+            "stage3_max_live_parameters": 10000000,
+            "stage3_max_reuse_distance": 10000000
+        },
+        "optimizer": {
+            "type": "Adam",
+            "params": {
+                "lr": 0.01,
+                "weight_decay": 0.0005
+            }
+        },
+        "scheduler": {
+            "type": "CosineAnnealingLR",
+            "params": {"T_max": 50}
+        },
+        "train_micro_batch_size_per_gpu": 8,
+        "gradient_accumulation_steps": 1,
+        "gradient_clipping": 1.0
+    },
+
+    "optimization": {
+        "mixed_precision": true,
+        "gradient_checkpoint": false,
+        "zero_optimization": true
+    }
+}

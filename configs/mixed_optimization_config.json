@@ -1,0 +1,42 @@
+{
+    "experiment_name": "mixed_optimization",
+    "description": "混合优化组实验 - FP16 + 每4层检查点",
+
+    "data": {
+        "train_path": "./data/kitti_subset/train",
+        "val_path": "./data/kitti_subset/val",
+        "nc": 3,
+        "img_size": 640
+    },
+
+    "model": {
+        "model_type": "s",
+        "pretrained": true
+    },
+
+    "training": {
+        "epochs": 50,
+        "batch_size": 8,
+        "workers": 4
+    },
+
+    "hyp": {
+        "lr0": 0.01,
+        "lrf": 0.01,
+        "momentum": 0.937,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 3.0,
+        "warmup_momentum": 0.8,
+        "warmup_bias_lr": 0.1,
+        "box": 0.05,
+        "cls": 0.5,
+        "obj": 1.0
+    },
+
+    "optimization": {
+        "mixed_precision": true,
+        "gradient_checkpoint": true,
+        "checkpoint_interval": 4,
+        "zero_optimization": false
+    }
+}
